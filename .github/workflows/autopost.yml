@@ -32,8 +32,8 @@ jobs:
           TZ: Asia/Ho_Chi_Minh
         run: python bot_once.py
 
-      - name: Upload debug screenshots (on failure)
-        if: failure()
+      - name: Upload debug screenshots (always)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: debug-screenshots
