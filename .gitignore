@@ -1,0 +1,13 @@
+# ❌ KHÔNG commit các file nhạy cảm này lên GitHub
+credentials.json
+instagram_session.json
+cookies.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Playwright
+/tmp/
