@@ -3,7 +3,7 @@ import os, time, json, base64
 os.environ['TZ'] = 'Asia/Ho_Chi_Minh'
 time.tzset()
 
-SHEET_ID        = os.environ.get('SHEET_ID', '1DHPJO32llTMMXe6Ua1cnAwG8UoPgtbJ2u6Osgt-AVwk')
+SHEET_ID        = os.environ.get('SHEET_ID', '')
 SHEET_NAME      = os.environ.get('SHEET_NAME', 'Sheet1')
 INSTAGRAM_URL   = 'https://www.instagram.com'
 CREDENTIALS_FILE = '/tmp/credentials.json'
@@ -193,8 +193,16 @@ def _write_pw_worker():
         '    page = context.new_page()\n',
         '    try:\n',
         '        log("   🌐 Mở Instagram...")\n',
-        '        page.goto(INSTAGRAM_URL, wait_until="networkidle", timeout=30000)\n',
-        '        time.sleep(random.uniform(2.0, 3.5))\n',
+        '        # Dùng domcontentloaded thay networkidle — Instagram chặn networkidle trên cloud IP\n',
+        '        for attempt in range(3):\n',
+        '            try:\n',
+        '                page.goto(INSTAGRAM_URL, wait_until="domcontentloaded", timeout=60000)\n',
+        '                break\n',
+        '            except Exception as ge:\n',
+        '                log(f"   ⚠️ goto attempt {attempt+1}/3 lỗi: {ge}")\n',
+        '                if attempt == 2: raise\n',
+        '                time.sleep(5)\n',
+        '        time.sleep(random.uniform(3.0, 5.0))\n',
         '\n',
         '        log(f"   🔗 URL: {page.url}")\n',
         '        log(f"   📄 Title: {page.title()}")\n',
